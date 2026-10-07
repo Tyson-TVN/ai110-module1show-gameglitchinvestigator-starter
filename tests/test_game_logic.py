@@ -30,6 +30,11 @@ def test_lowest_guess_tells_player_to_go_higher():
     assert outcome == "Too Low"
     assert "HIGHER" in message
 
+def test_three_digit_guess_vs_two_digit_secret_is_numeric():
+    outcome, message = check_guess(100, 97)
+    assert outcome == "Too High"
+    assert "LOWER" in message
+
 def test_easy_range_is_1_to_20():
     assert get_range_for_difficulty("Easy") == (1, 20)
 
