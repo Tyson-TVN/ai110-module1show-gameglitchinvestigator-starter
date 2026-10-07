@@ -1,16 +1,6 @@
 import random
 import streamlit as st
-from logic_utils import check_guess
-
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
-        return 1, 50
-    return 1, 100
-
+from logic_utils import check_guess, get_range_for_difficulty
 
 def parse_guess(raw: str):
     if raw is None:
@@ -72,9 +62,10 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
-# FIXME: Logic breaks here: the secret is generated only once using the difficulty selected at startup and is never regenerated when the difficulty changes (e.g. secret 91 on Easy 1-20).
-if "secret" not in st.session_state:
+# FIX: Regenerate the secret whenever the difficulty it was generated for differs from the selected one.
+if "secret" not in st.session_state or st.session_state.get("secret_difficulty") != difficulty:
     st.session_state.secret = random.randint(low, high)
+    st.session_state.secret_difficulty = difficulty
 
 if "attempts" not in st.session_state:
     st.session_state.attempts = 1
@@ -117,8 +108,9 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
-    # FIXME: Logic breaks here: New Game ignores the selected difficulty and always uses randint(1, 100), so the secret can fall outside the Easy/Hard range.
-    st.session_state.secret = random.randint(1, 100)
+    # FIX: Use the selected difficulty's range instead of a hardcoded 1-100.
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.secret_difficulty = difficulty
     st.success("New game started.")
     st.rerun()
 

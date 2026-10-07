@@ -1,4 +1,4 @@
-from logic_utils import check_guess
+from logic_utils import check_guess, get_range_for_difficulty
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
@@ -29,3 +29,17 @@ def test_lowest_guess_tells_player_to_go_higher():
     outcome, message = check_guess(1, 50)
     assert outcome == "Too Low"
     assert "HIGHER" in message
+
+def test_easy_range_is_1_to_20():
+    assert get_range_for_difficulty("Easy") == (1, 20)
+
+def test_normal_range_is_1_to_100():
+    assert get_range_for_difficulty("Normal") == (1, 100)
+
+def test_unknown_difficulty_defaults_to_1_to_100():
+    assert get_range_for_difficulty("Impossible") == (1, 100)
+
+def test_low_is_less_than_high_for_every_difficulty():
+    for difficulty in ["Easy", "Normal", "Hard"]:
+        low, high = get_range_for_difficulty(difficulty)
+        assert low < high
