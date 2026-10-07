@@ -1,4 +1,4 @@
-from logic_utils import check_guess, get_range_for_difficulty
+from logic_utils import check_guess, get_range_for_difficulty, parse_guess
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
@@ -48,3 +48,33 @@ def test_low_is_less_than_high_for_every_difficulty():
     for difficulty in ["Easy", "Normal", "Hard"]:
         low, high = get_range_for_difficulty(difficulty)
         assert low < high
+
+# Edge cases for parse_guess
+
+def test_empty_string_is_rejected():
+    ok, guess, error = parse_guess("")
+    assert ok is False
+    assert guess is None
+    assert error == "Enter a guess."
+
+def test_non_numeric_text_is_rejected():
+    for raw in ["abc", "12abc", "   ", "1e3"]:
+        ok, guess, error = parse_guess(raw)
+        assert ok is False
+        assert guess is None
+        assert error == "That is not a number."
+
+def test_negative_number_is_parsed_without_crashing():
+    # parse_guess only converts text to an int; it does not check the range
+    assert parse_guess("-5") == (True, -5, None)
+
+def test_decimal_guess_is_truncated_to_int():
+    assert parse_guess("7.9") == (True, 7, None)
+
+def test_huge_values_do_not_crash():
+    ok, guess, _ = parse_guess("99999999999999999999")
+    assert ok is True
+    assert guess == 99999999999999999999
+    ok, guess, error = parse_guess("1.5e400")
+    assert ok is False
+    assert error == "That is not a number."

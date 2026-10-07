@@ -35,7 +35,7 @@ It wrote the code, ran away, and now the game is unplayable.
 - On even attempts the secret was converted to a string, so the hints used text comparison.
 
 **Fixes applied:**
-- Moved `check_guess` and `get_range_for_difficulty` into `logic_utils.py` and imported them in `app.py`.
+- Moved `check_guess`, `get_range_for_difficulty` and `parse_guess` into `logic_utils.py` and imported them in `app.py`.
 - Swapped the hint messages in `check_guess` so the hints match the guess.
 - Regenerated the secret when the difficulty changes, and made New Game use the selected difficulty's range (`secret_difficulty` in `st.session_state`).
 - Passed the integer secret to `check_guess` on every attempt.
@@ -62,12 +62,29 @@ It wrote the code, ran away, and now the game is unplayable.
 rootdir: C:\Users\thota\ai110-module1show-gameglitchinvestigator-starter
 configfile: pytest.ini
 plugins: anyio-4.15.1
-collected 11 items                                                                            
+collected 16 items
 
-tests\test_game_logic.py ...........                                                    [100%]
+tests/test_game_logic.py::test_winning_guess PASSED                      [  6%]
+tests/test_game_logic.py::test_guess_too_high PASSED                     [ 12%]
+tests/test_game_logic.py::test_guess_too_low PASSED                      [ 18%]
+tests/test_game_logic.py::test_too_high_tells_player_to_go_lower PASSED   [ 25%]
+tests/test_game_logic.py::test_too_low_tells_player_to_go_higher PASSED   [ 31%]
+tests/test_game_logic.py::test_lowest_guess_tells_player_to_go_higher PASSED [ 37%]
+tests/test_game_logic.py::test_three_digit_guess_vs_two_digit_secret_is_numeric PASSED [ 43%]
+tests/test_game_logic.py::test_easy_range_is_1_to_20 PASSED              [ 50%]
+tests/test_game_logic.py::test_normal_range_is_1_to_100 PASSED           [ 56%]
+tests/test_game_logic.py::test_unknown_difficulty_defaults_to_1_to_100 PASSED [ 62%]
+tests/test_game_logic.py::test_low_is_less_than_high_for_every_difficulty PASSED [ 68%]
+tests/test_game_logic.py::test_empty_string_is_rejected PASSED            [ 75%]
+tests/test_game_logic.py::test_non_numeric_text_is_rejected PASSED        [ 81%]
+tests/test_game_logic.py::test_negative_number_is_parsed_without_crashing PASSED [ 87%]
+tests/test_game_logic.py::test_decimal_guess_is_truncated_to_int PASSED   [ 93%]
+tests/test_game_logic.py::test_huge_values_do_not_crash PASSED            [100%]
 
-===================================== 11 passed in 0.11s =====================================
+============================= 16 passed in 0.13s ==============================
 ```
+
+Challenge 1 (advanced edge-case testing) added five `parse_guess` tests covering empty input, non-numeric text, negative numbers, decimals and extremely large values. The prompt and the reason for each case are recorded in `ai_interactions.md`.
 
 ## 🚀 Stretch Features
 
