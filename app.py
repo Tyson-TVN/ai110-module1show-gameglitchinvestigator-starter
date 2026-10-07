@@ -34,6 +34,7 @@ def check_guess(guess, secret):
         return "Win", "🎉 Correct!"
 
     try:
+        # FIXME: Logic breaks here: hint messages are swapped. A guess higher than the secret says "Go HIGHER!" and a lower guess says "Go LOWER!" (same swap in the TypeError fallback below).
         if guess > secret:
             return "Too High", "📈 Go HIGHER!"
         else:
@@ -89,6 +90,7 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
+# FIXME: Logic breaks here: the secret is generated only once using the difficulty selected at startup and is never regenerated when the difficulty changes (e.g. secret 91 on Easy 1-20).
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
@@ -133,6 +135,7 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
+    # FIXME: Logic breaks here: New Game ignores the selected difficulty and always uses randint(1, 100), so the secret can fall outside the Easy/Hard range.
     st.session_state.secret = random.randint(1, 100)
     st.success("New game started.")
     st.rerun()
